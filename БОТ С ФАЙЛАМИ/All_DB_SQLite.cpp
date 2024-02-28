@@ -265,19 +265,3 @@ string InformationUserForBD(string Username)
     }
     return User;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

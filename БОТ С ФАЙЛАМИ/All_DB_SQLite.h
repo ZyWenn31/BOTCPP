@@ -1,4 +1,6 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
+#define SQLITECPP_COMPILE_DLL
 #include "SQLiteCpp/SQLiteCpp.h"
 #include <string>
 #include <vector>
