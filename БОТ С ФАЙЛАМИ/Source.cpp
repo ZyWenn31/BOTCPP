@@ -9,7 +9,11 @@
 #include <iostream>
 #include <string>
 
+#include "Keyboards.h"
+#include "All_DB_SQLite.h"
 
+
+vector<string>bot_commands = {"start"};
 
 int main()
 {
