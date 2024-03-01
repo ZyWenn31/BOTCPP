@@ -1,4 +1,7 @@
 #include "All_DB_SQLite.h"
+#include "Models.h"
+
+#include <vector>
 
 SQLite::Database Data("UserAndStatus.db", SQLite::OPEN_CREATE | SQLite::OPEN_READWRITE);
 
@@ -36,13 +39,12 @@ bool HelloToUser(string n, string user, string ID)
 {
     if (n == "User:")
     {
-        SQLite::Statement insert(Data, "INSERT INTO usstat (Username, Status, UserID, Time, LastRestart, SearchUserBool) VALUES (?, ?, ?, ?, ?, ?)");
+        SQLite::Statement insert(Data, "INSERT INTO usstat (Username, Status, UserID, Time, LastRestart) VALUES (?, ?, ?, ?, ?)");
         insert.bind(1, user);
         insert.bind(2, "Member");
         insert.bind(3, ID);
         insert.bind(4, get_time_as_str());
         insert.bind(5, "0");
-        insert.bind(6, 0);
         insert.exec();
         return true;
     }
@@ -53,7 +55,7 @@ bool HelloToUser(string n, string user, string ID)
 
 void createtable()
 {
-    Data.exec("CREATE TABLE IF NOT EXISTS usstat (ID INTEGER PRIMARY KEY, Username TEXT, Status TEXT, UserID INTEGER, Time TEXT, LastRestart TEXT, SearchUserBool INTEGER)");
+    Data.exec("CREATE TABLE IF NOT EXISTS usstat (ID INTEGER PRIMARY KEY, Username TEXT, Status TEXT, UserID INTEGER, Time TEXT, LastRestart TEXT)");
     Data.exec("CREATE TABLE IF NOT EXISTS funct (Time INTEGER, Password INTEGER, joke INTEGER, anwser INTEGER)");
 }
 
@@ -85,6 +87,13 @@ void UpdateStatusAnswer()
     update.exec();
 }
 
+void UpdateStatusFunction(string function)
+{
+    SQLite::Statement update(Data, "UPDATE funct SET " + function + " = ? WHERE " + function + " = 1");
+    update.bind(1, 0);
+    update.exec();
+}
+
 void UpdateStatusTimePlus()
 {
     SQLite::Statement update(Data, "UPDATE funct SET Time = ? WHERE Time = 0");
@@ -109,6 +118,13 @@ void UpdateStatusJokePlus()
 void UpdateStatusAnswerPlus()
 {
     SQLite::Statement update(Data, "UPDATE funct SET anwser = ? WHERE anwser = 0");
+    update.bind(1, 1);
+    update.exec();
+}
+
+void UpdateStatusFunctionPlus(string function)
+{
+    SQLite::Statement update(Data, "UPDATE funct SET "+ function + " = ? WHERE " + function + " = 0");
     update.bind(1, 1);
     update.exec();
 }
@@ -189,6 +205,25 @@ bool StatusAnswer()
     }
 }
 
+bool StatusFunction(string function)
+{
+    int statuu;
+    SQLite::Statement query(Data, "SELECT " + function + " FROM funct");
+    while (query.executeStep())
+    {
+        int statu = query.getColumn(0);
+        statuu = statu;
+    }
+    if (statuu == 1)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 string SearchUser(string Username)
 {
     string User;
@@ -202,6 +237,22 @@ string SearchUser(string Username)
     }
     result = "User:" + User;
     return result;
+}
+
+vector<ItemsModel> GetItem()
+{
+    vector<ItemsModel> Items;
+    SQLite::Statement query(Data, ("SELECT * FROM items"));
+    while (query.executeStep())
+    {
+        ItemsModel Item;
+        Item.id = query.getColumn(0);
+        string kolhoz = query.getColumn(1);
+        Item.name = kolhoz;
+        Item.price = query.getColumn(2);
+        Items.push_back(Item);
+    }
+    return Items;
 }
 
 string SearchUsersToAdmin()

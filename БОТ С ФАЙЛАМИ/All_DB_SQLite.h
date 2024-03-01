@@ -4,6 +4,7 @@
 #include "SQLiteCpp/SQLiteCpp.h"
 #include <string>
 #include <vector>
+#include "Models.h"
 #include <ctime>
 
 using namespace std;
@@ -19,18 +20,24 @@ void UpdateStatusTime();
 void UpdateStatusPassword();
 void UpdateStatusJoke();
 void UpdateStatusAnswer();
+//
+void UpdateStatusFunction(string function);
 
 // Активация кнопок
 void UpdateStatusTimePlus();
 void UpdateStatusPasswordPlus();
 void UpdateStatusJokePlus();
 void UpdateStatusAnswerPlus();
+//
+void UpdateStatusFunctionPlus(string function);
 
 // Проверка активности кнопок
 bool StatusTime();
 bool StatusPassword();
 bool StatusJoke();
 bool StatusAnswer();
+//
+bool StatusFunction(string function);
 
 /// <summary>
 /// ищет пользователя по юзернейму
@@ -48,3 +55,5 @@ void UpdateLastRestartBD(string username);
 
 // Выводит информацию о пользователе из базы данных
 string InformationUserForBD(string Username);
+
+vector<ItemsModel> GetItem();

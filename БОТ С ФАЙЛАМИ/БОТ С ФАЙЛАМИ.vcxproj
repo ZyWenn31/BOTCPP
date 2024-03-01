@@ -129,12 +129,17 @@
   <ItemGroup>
     <ClCompile Include="All_DB_SQLite.cpp" />
     <ClCompile Include="AnotherFunctions.cpp" />
+    <ClCompile Include="Information_for_bot.cpp" />
     <ClCompile Include="Keyboards.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="All_DB_SQLite.h" />
     <ClInclude Include="AnotherFunctions.h" />
+    <ClInclude Include="Enums.h" />
+    <ClInclude Include="Texts.h" />
+    <ClInclude Include="Models.h" />
+    <ClInclude Include="Information_for_bot.h" />
     <ClInclude Include="Keyboards.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

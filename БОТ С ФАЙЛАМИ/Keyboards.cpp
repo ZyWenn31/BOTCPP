@@ -1,208 +1,226 @@
-#include "Keyboards.h"
+п»ї#include "Keyboards.h"
+#include "All_DB_SQLite.h"
+#include "Texts.h"
 
-void includKeyboards()
+CallBackData buttons;
+Name ButtonName;
+
+InlineKeyboardMarkup::Ptr OUTKEY()
 {
-    //out Клавиатура
     InlineKeyboardMarkup::Ptr outKey(new InlineKeyboardMarkup);
     vector<InlineKeyboardButton::Ptr> Keout;
     InlineKeyboardButton::Ptr outBTN(new InlineKeyboardButton);
-    outBTN->text = u8"На главную";
-    outBTN->callbackData = u8"На главную";
+    outBTN->text = buttons.to_main;
+    outBTN->callbackData = buttons.to_main;
     Keout.push_back(outBTN);
     outKey->inlineKeyboard.push_back(Keout);
+    return outKey;
+}
 
-    // to choose клавиатура
-    InlineKeyboardMarkup::Ptr backKeyboard(new InlineKeyboardMarkup);
-    vector<InlineKeyboardButton::Ptr> backbtns;
-    InlineKeyboardButton::Ptr backbtn(new InlineKeyboardButton);
-    backbtn->text = u8"Перейти в выбор действий";
-    backbtn->callbackData = u8"Выбор";
-    backbtns.push_back(backbtn);
-    backKeyboard->inlineKeyboard.push_back(backbtns);
+InlineKeyboardMarkup::Ptr ItemsKeyboard() {
+    vector<ItemsModel> items = GetItem();
 
-    // клавиатура message for all users
-    InlineKeyboardMarkup::Ptr MessageBTNSKeyboard(new InlineKeyboardMarkup);
-    vector<InlineKeyboardButton::Ptr> MessBTNS;
-    InlineKeyboardButton::Ptr Mesbtn(new InlineKeyboardButton);
-    Mesbtn->text = u8"Отправить сообщение";
-    Mesbtn->callbackData = u8"Сообщение";
-    MessBTNS.push_back(Mesbtn);
-    MessageBTNSKeyboard->inlineKeyboard.push_back(MessBTNS);
+    InlineKeyboardMarkup::Ptr ItemsKeyboard(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> buttons;
 
-    //YesNo Клавиатура
-    InlineKeyboardMarkup::Ptr YesKey(new InlineKeyboardMarkup);
-    vector<InlineKeyboardButton::Ptr> Keyes;
-    InlineKeyboardButton::Ptr GoBtn(new InlineKeyboardButton);
-    GoBtn->text = "GO";
-    GoBtn->callbackData = "GO";
-    Keyes.push_back(GoBtn);
-    Keout.push_back(outBTN);
-    YesKey->inlineKeyboard.push_back(Keyes);
-    YesKey->inlineKeyboard.push_back({ outBTN });
+    for (const auto& item : items) {
+        InlineKeyboardButton::Ptr button(new InlineKeyboardButton);
+        button->text = item.name;
+        button->callbackData = "item_" + item.id;
+        buttons.push_back(button);
+    }
 
-    // chooose up funct клавиатура
-    InlineKeyboardMarkup::Ptr UpFunctKeyboard(new InlineKeyboardMarkup);
-    vector<InlineKeyboardButton::Ptr> Upbtns;
-    InlineKeyboardButton::Ptr UpTimeFunct(new InlineKeyboardButton), UpPasswordFunct(new InlineKeyboardButton), UpJokeFunct(new InlineKeyboardButton), UpQuestionFunct(new InlineKeyboardButton);
-    UpTimeFunct->text = u8"Активировать 'время'";
-    UpTimeFunct->callbackData = u8"АктВремя";
-    UpPasswordFunct->text = u8"Активировать 'Пароль'";
-    UpPasswordFunct->callbackData = u8"АктПароль";
-    UpJokeFunct->text = u8"Активировать 'Шутка'";
-    UpJokeFunct->callbackData = u8"АктШутка";
-    UpQuestionFunct->text = u8"Активировать 'Вопрос'";
-    UpQuestionFunct->callbackData = u8"АктВопрос";
-    backbtns.push_back(backbtn);
-    Upbtns.push_back(UpTimeFunct);
-    Upbtns.push_back(UpPasswordFunct);
-    Upbtns.push_back(UpJokeFunct);
-    Upbtns.push_back(UpQuestionFunct);
-    UpFunctKeyboard->inlineKeyboard.push_back({ UpTimeFunct });
-    UpFunctKeyboard->inlineKeyboard.push_back({ UpPasswordFunct });
-    UpFunctKeyboard->inlineKeyboard.push_back({ UpJokeFunct });
-    UpFunctKeyboard->inlineKeyboard.push_back({ UpQuestionFunct });
-    UpFunctKeyboard->inlineKeyboard.push_back({ backbtn });
+    ItemsKeyboard->inlineKeyboard.push_back(buttons);
+    return ItemsKeyboard;
+}
 
-    // chooose delete funct клавиатура
-    InlineKeyboardMarkup::Ptr OfFunctKeyboard(new InlineKeyboardMarkup);
-    vector<InlineKeyboardButton::Ptr> Offbtns;
-    InlineKeyboardButton::Ptr OffTimeFunct(new InlineKeyboardButton), OffPasswordFunct(new InlineKeyboardButton), OffJokeFunct(new InlineKeyboardButton), OffQuestionFunct(new InlineKeyboardButton);
-    OffTimeFunct->text = u8"Деактивировать 'время'";
-    OffTimeFunct->callbackData = u8"ДеВремя";
-    OffPasswordFunct->text = u8"Деактивировать 'Пароль'";
-    OffPasswordFunct->callbackData = u8"ДеПароль";
-    OffJokeFunct->text = u8"Деактивировать 'Шутка'";
-    OffJokeFunct->callbackData = u8"ДеШутка";
-    OffQuestionFunct->text = u8"Деактивировать 'Вопрос'";
-    OffQuestionFunct->callbackData = u8"ДеВопрос";
-    backbtns.push_back(backbtn);
-    Offbtns.push_back(OffTimeFunct);
-    Offbtns.push_back(OffPasswordFunct);
-    Offbtns.push_back(OffJokeFunct);
-    Offbtns.push_back(OffQuestionFunct);
-    OfFunctKeyboard->inlineKeyboard.push_back({ OffTimeFunct });
-    OfFunctKeyboard->inlineKeyboard.push_back({ OffPasswordFunct });
-    OfFunctKeyboard->inlineKeyboard.push_back({ OffJokeFunct });
-    OfFunctKeyboard->inlineKeyboard.push_back({ OffQuestionFunct });
-    OfFunctKeyboard->inlineKeyboard.push_back({ backbtn });
+InlineKeyboardMarkup::Ptr passwordKey()
+{
+    InlineKeyboardMarkup::Ptr PasswordKeyboard(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> Passwordbtns;
 
-    //joke Клавиатура
-    InlineKeyboardMarkup::Ptr joKey(new InlineKeyboardMarkup);
-    vector<InlineKeyboardButton::Ptr> Kejok;
-    InlineKeyboardButton::Ptr jkBtn(new InlineKeyboardButton);
-    jkBtn->text = u8"Следующая шутка";
-    jkBtn->callbackData = u8"Следующая шутка";
-    Kejok.push_back(jkBtn);
-    Keout.push_back(outBTN);
-    joKey->inlineKeyboard.push_back({ jkBtn });
-    joKey->inlineKeyboard.push_back({ outBTN });
+    for (int i = 8; i < 13; i++) {
+        InlineKeyboardButton::Ptr PasswordBtn(new InlineKeyboardButton);
+        PasswordBtn->text = buttons.passName + to_string(i);
+        PasswordBtn->callbackData = to_string(i);
+        Passwordbtns.push_back(PasswordBtn);
+        PasswordKeyboard->inlineKeyboard.push_back({PasswordBtn});
+    }
+    return PasswordKeyboard;
+}
 
-    // AdminMenu Панель
-    InlineKeyboardMarkup::Ptr AdminMenuKeyboard(new InlineKeyboardMarkup);
-    vector<InlineKeyboardButton::Ptr> AdminMenuBTNS;
-    InlineKeyboardButton::Ptr UserFunct(new InlineKeyboardButton), MessageAllFunct(new InlineKeyboardButton), OffFunct(new InlineKeyboardButton);
-    UserFunct->text = u8"Найти пользователя";
-    UserFunct->callbackData = u8"Пользователь";
-    MessageAllFunct->text = u8"Рассылка";
-    MessageAllFunct->callbackData = u8"Рассылка";
-    OffFunct->text = u8"Изменение функций";
-    OffFunct->callbackData = u8"Изменение";
-    AdminMenuBTNS.push_back(UserFunct);
-    AdminMenuBTNS.push_back(MessageAllFunct);
-    AdminMenuBTNS.push_back(OffFunct);
-    Keout.push_back(outBTN);
-    AdminMenuKeyboard->inlineKeyboard.push_back({ UserFunct });
-    AdminMenuKeyboard->inlineKeyboard.push_back({ MessageAllFunct });
-    AdminMenuKeyboard->inlineKeyboard.push_back({ OffFunct });
-    AdminMenuKeyboard->inlineKeyboard.push_back({ outBTN });
+InlineKeyboardMarkup::Ptr GeneralKeyboard()
+{
+    InlineKeyboardMarkup::Ptr GeneralKeyboard(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> GeneralBtns;
 
+    for (const auto& a : ButtonName.test) {
+        InlineKeyboardButton::Ptr GeneralBtn(new InlineKeyboardButton);
+        GeneralBtn->text = a;
+        GeneralBtn->callbackData = a;
+        GeneralBtns.push_back(GeneralBtn);
+        GeneralKeyboard->inlineKeyboard.push_back({ GeneralBtn });
+    }
+    return GeneralKeyboard;
+}
 
-    //Главная клавиатура 
-    InlineKeyboardMarkup::Ptr Generalkeyboard(new InlineKeyboardMarkup);
-    vector<InlineKeyboardButton::Ptr> GeneralBTNS;
-    InlineKeyboardButton::Ptr TimeFunct(new InlineKeyboardButton), PasswordFunct(new InlineKeyboardButton), JokeFunct(new InlineKeyboardButton), QuestionFunct(new InlineKeyboardButton);
-    TimeFunct->text = u8"Узнать время";
-    TimeFunct->callbackData = u8"Узнать время";
-    PasswordFunct->text = u8"Получить пароль";
-    PasswordFunct->callbackData = u8"Получить пароль";
-    JokeFunct->text = u8"Получить шутку";
-    JokeFunct->callbackData = u8"Получить шутку";
-    QuestionFunct->text = u8"Получить ответ на вопрос";
-    QuestionFunct->callbackData = u8"Получить ответ на вопрос";
-    GeneralBTNS.push_back(TimeFunct);
-    GeneralBTNS.push_back(PasswordFunct);
-    GeneralBTNS.push_back(JokeFunct);
-    GeneralBTNS.push_back(QuestionFunct);
-    Generalkeyboard->inlineKeyboard.push_back({ TimeFunct });
-    Generalkeyboard->inlineKeyboard.push_back({ PasswordFunct });
-    Generalkeyboard->inlineKeyboard.push_back({ JokeFunct });
-    Generalkeyboard->inlineKeyboard.push_back({ QuestionFunct });
+InlineKeyboardMarkup::Ptr General_Admin_Keyboard()
+{
+    InlineKeyboardMarkup::Ptr General_Admin_Keyboard(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> General_Admin_Btns;
 
-    // Admin клавиатура
-    InlineKeyboardMarkup::Ptr GeneralAdminkeyboard(new InlineKeyboardMarkup);
-    vector<InlineKeyboardButton::Ptr> GeneralAdminBTNS;
-    InlineKeyboardButton::Ptr TimeFunct1(new InlineKeyboardButton), PasswordFunct1(new InlineKeyboardButton), JokeFunct1(new InlineKeyboardButton), QuestionFunct1(new InlineKeyboardButton), RRRRRRRR(new InlineKeyboardButton);
-    TimeFunct1->text = u8"Узнать время";
-    TimeFunct1->callbackData = u8"Узнать время";
-    PasswordFunct1->text = u8"Получить пароль";
-    PasswordFunct1->callbackData = u8"Получить пароль";
-    JokeFunct1->text = u8"Получить шутку";
-    JokeFunct1->callbackData = u8"Получить шутку";
-    QuestionFunct1->text = u8"Получить ответ на вопрос";
-    QuestionFunct1->callbackData = u8"Получить ответ на вопрос";
-    RRRRRRRR->text = u8"Меню Администратора";
-    RRRRRRRR->callbackData = u8"Меню";
-    GeneralAdminBTNS.push_back(TimeFunct1);
-    GeneralAdminBTNS.push_back(PasswordFunct1);
-    GeneralAdminBTNS.push_back(JokeFunct1);
-    GeneralAdminBTNS.push_back(QuestionFunct1);
-    GeneralAdminBTNS.push_back(RRRRRRRR);
-    GeneralAdminkeyboard->inlineKeyboard.push_back({ TimeFunct1 });
-    GeneralAdminkeyboard->inlineKeyboard.push_back({ PasswordFunct1 });
-    GeneralAdminkeyboard->inlineKeyboard.push_back({ JokeFunct1 });
-    GeneralAdminkeyboard->inlineKeyboard.push_back({ QuestionFunct1 });
-    GeneralAdminkeyboard->inlineKeyboard.push_back({ RRRRRRRR });
+    for (const auto& a : ButtonName.test_admin) {
+        InlineKeyboardButton::Ptr General_Admin_Btn(new InlineKeyboardButton);
+        General_Admin_Btn->text = a;
+        General_Admin_Btn->callbackData = a;
+        General_Admin_Btns.push_back(General_Admin_Btn);
+        General_Admin_Keyboard->inlineKeyboard.push_back({ General_Admin_Btn });
+    }
+    return General_Admin_Keyboard;
+}
 
-    // клавиатура изменений кнопок ButtonStatusUpdate
-    InlineKeyboardMarkup::Ptr ResetBtnsKeyboard(new InlineKeyboardMarkup);
-    vector<InlineKeyboardButton::Ptr> ResetBTNS;
-    InlineKeyboardButton::Ptr PlusBtn(new InlineKeyboardButton), MinusBtn(new InlineKeyboardButton);
-    PlusBtn->text = u8"Активация кнопок";
-    PlusBtn->callbackData = u8"Активация";
-    MinusBtn->text = u8"Деактивация кнопок";
-    MinusBtn->callbackData = u8"Деактивация";
-    ResetBTNS.push_back(PlusBtn);
-    ResetBTNS.push_back(MinusBtn);
-    Keout.push_back(outBTN);
-    ResetBtnsKeyboard->inlineKeyboard.push_back({ PlusBtn });
-    ResetBtnsKeyboard->inlineKeyboard.push_back({ MinusBtn });
-    ResetBtnsKeyboard->inlineKeyboard.push_back({ outBTN });
+InlineKeyboardMarkup::Ptr Admin_Menu_Key()
+{
+    InlineKeyboardMarkup::Ptr Admin_Menu_Key(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> Admin_Menu_Btns;
+    for (const auto& a : ButtonName.AdminButns_vec_Name)
+    {
+        InlineKeyboardButton::Ptr Admin_Btn(new InlineKeyboardButton);
+        Admin_Btn->text = a;
+        Admin_Btn->callbackData = a;
+        Admin_Menu_Btns.push_back(Admin_Btn);
+        Admin_Menu_Key->inlineKeyboard.push_back({ Admin_Btn });
+    }
+    InlineKeyboardButton::Ptr Admin_Btn(new InlineKeyboardButton);
+    Admin_Btn->text = buttons.to_main;
+    Admin_Btn->callbackData = buttons.to_main;
+    Admin_Menu_Btns.push_back(Admin_Btn);
+    Admin_Menu_Key->inlineKeyboard.push_back({ Admin_Btn });
+    return Admin_Menu_Key;
+}
 
+InlineKeyboardMarkup::Ptr Choose_key() {
 
-    //password клавиатура
-    InlineKeyboardMarkup::Ptr keyboardToPassword(new InlineKeyboardMarkup);
-    vector<InlineKeyboardButton::Ptr> PassBtn;
-    InlineKeyboardButton::Ptr eightBtn(new InlineKeyboardButton), nineBtn(new InlineKeyboardButton), tenBtn(new InlineKeyboardButton), elevBtn(new InlineKeyboardButton), twelvBtn(new InlineKeyboardButton), moreBtn(new InlineKeyboardButton);
-    eightBtn->text = "8";
-    nineBtn->text = "9";
-    tenBtn->text = "10";
-    elevBtn->text = "11";
-    twelvBtn->text = "12";
-    moreBtn->text = "more";
-    eightBtn->callbackData = "8";
-    nineBtn->callbackData = "9";
-    tenBtn->callbackData = "10";
-    elevBtn->callbackData = "11";
-    twelvBtn->callbackData = "12";
-    moreBtn->callbackData = "more";
-    PassBtn.push_back(eightBtn);
-    PassBtn.push_back(nineBtn);
-    PassBtn.push_back(tenBtn);
-    PassBtn.push_back(elevBtn);
-    PassBtn.push_back(twelvBtn);
-    PassBtn.push_back(moreBtn);
-    Keout.push_back(outBTN);
-    keyboardToPassword->inlineKeyboard.push_back(PassBtn);
-    keyboardToPassword->inlineKeyboard.push_back({ outBTN });
-    //Конец клавиатур
+    InlineKeyboardMarkup::Ptr Choose_key(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> ChooseBtns;
+    InlineKeyboardButton::Ptr ChooseBtn(new InlineKeyboardButton);
+    ChooseBtn->text = ButtonName.choose_btn;
+    ChooseBtn->callbackData = buttons.choose_btn_back;
+    ChooseBtns.push_back(ChooseBtn);
+    Choose_key->inlineKeyboard.push_back({ ChooseBtn });
+
+    return Choose_key;
+}
+
+InlineKeyboardMarkup::Ptr Go_MessageKey() {
+
+    InlineKeyboardMarkup::Ptr Go_MessageKey(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> Go_Message_btns;
+    InlineKeyboardButton::Ptr Go_Message_btn(new InlineKeyboardButton);
+    Go_Message_btn->text = ButtonName.message_to_users;
+    Go_Message_btn->callbackData = buttons.message_to_users_Back;
+    Go_Message_btns.push_back(Go_Message_btn);
+    Go_MessageKey->inlineKeyboard.push_back({ Go_Message_btn });
+
+    return Go_MessageKey;
+}
+
+InlineKeyboardMarkup::Ptr Yes_or_no_Keyboard() {
+
+    InlineKeyboardMarkup::Ptr Yes_or_no_Keyboard(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> Yes_or_no_Keyboard_btns;
+    InlineKeyboardButton::Ptr Yes_or_no_Keyboard_btn(new InlineKeyboardButton);
+    Yes_or_no_Keyboard_btn->text = ButtonName.Yes_btn;
+    Yes_or_no_Keyboard_btn->callbackData = buttons.Yes_btn_back;
+    Yes_or_no_Keyboard_btns.push_back(Yes_or_no_Keyboard_btn);
+    Yes_or_no_Keyboard->inlineKeyboard.push_back({ Yes_or_no_Keyboard_btn });
+
+    InlineKeyboardButton::Ptr Yes_or_no_Keyboard_btn1(new InlineKeyboardButton);
+    Yes_or_no_Keyboard_btn1->text = buttons.to_main;
+    Yes_or_no_Keyboard_btn1->callbackData = buttons.to_main;
+    Yes_or_no_Keyboard_btns.push_back(Yes_or_no_Keyboard_btn1);
+    Yes_or_no_Keyboard->inlineKeyboard.push_back({ Yes_or_no_Keyboard_btn1 });
+    return Yes_or_no_Keyboard;
+}
+
+InlineKeyboardMarkup::Ptr UP_Funct_Key()
+{
+    InlineKeyboardMarkup::Ptr UP_Funct_Key(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> UP_Funct_Btns;
+    for (const auto& a : ButtonName.Choose_UP_btns)
+    {
+        InlineKeyboardButton::Ptr UP_Funct_Btn(new InlineKeyboardButton);
+        UP_Funct_Btn->text = a;
+        UP_Funct_Btn->callbackData = a;
+        UP_Funct_Btns.push_back(UP_Funct_Btn);
+        UP_Funct_Key->inlineKeyboard.push_back({ UP_Funct_Btn });
+    }
+    InlineKeyboardButton::Ptr UP_Funct_Btn(new InlineKeyboardButton);
+    UP_Funct_Btn->text = ButtonName.choose_btn;
+    UP_Funct_Btn->callbackData = buttons.choose_btn_back;
+    UP_Funct_Btns.push_back(UP_Funct_Btn);
+    UP_Funct_Key->inlineKeyboard.push_back({ UP_Funct_Btn });
+
+    return UP_Funct_Key;
+}
+
+InlineKeyboardMarkup::Ptr DEL_Funct_Key()
+{
+    InlineKeyboardMarkup::Ptr DEL_Funct_Key(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> DEL_Funct_BTNS;
+    for (const auto& a : ButtonName.Choose_Del_btns)
+    {
+        InlineKeyboardButton::Ptr DEL_Funct_BTN(new InlineKeyboardButton);
+        DEL_Funct_BTN->text = a;
+        DEL_Funct_BTN->callbackData = a;
+        DEL_Funct_BTNS.push_back(DEL_Funct_BTN);
+        DEL_Funct_Key->inlineKeyboard.push_back({ DEL_Funct_BTN });
+    }
+    InlineKeyboardButton::Ptr DEL_Funct_BTN(new InlineKeyboardButton);
+    DEL_Funct_BTN->text = ButtonName.choose_btn;
+    DEL_Funct_BTN->callbackData = buttons.choose_btn_back;
+    DEL_Funct_BTNS.push_back(DEL_Funct_BTN);
+    DEL_Funct_Key->inlineKeyboard.push_back({ DEL_Funct_BTN });
+
+    return DEL_Funct_Key;
+}
+
+InlineKeyboardMarkup::Ptr Joke_keyboard() {
+
+    InlineKeyboardMarkup::Ptr Joke_keyboard(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> Joke_Btns;
+    InlineKeyboardButton::Ptr Joke_Btn(new InlineKeyboardButton);
+    Joke_Btn->text = ButtonName.joke_btn;
+    Joke_Btn->callbackData = buttons.joke_btn_btn;
+    Joke_Btns.push_back(Joke_Btn);
+    Joke_keyboard->inlineKeyboard.push_back({ Joke_Btn });
+
+    InlineKeyboardButton::Ptr Joke_Btn1(new InlineKeyboardButton);
+    Joke_Btn1->text = buttons.to_main;
+    Joke_Btn1->callbackData = buttons.to_main;
+    Joke_Btns.push_back(Joke_Btn1);
+    Joke_keyboard->inlineKeyboard.push_back({ Joke_Btn1 });
+    return Joke_keyboard;
+}
+
+InlineKeyboardMarkup::Ptr Reset_btns_keyboard() {
+
+    InlineKeyboardMarkup::Ptr Reset_btns_keyboard(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> Reset_btns_btns;
+    for (const auto& a : ButtonName.Reset_BTNS_VEC)
+    {
+        InlineKeyboardButton::Ptr Reset_btns_btn(new InlineKeyboardButton);
+        Reset_btns_btn->text = a;
+        Reset_btns_btn->callbackData = a;
+        Reset_btns_btns.push_back(Reset_btns_btn);
+        Reset_btns_keyboard->inlineKeyboard.push_back({ Reset_btns_btn });
+    }
+
+    InlineKeyboardButton::Ptr Joke_Btn1(new InlineKeyboardButton);
+    Joke_Btn1->text = buttons.to_main;
+    Joke_Btn1->callbackData = buttons.to_main;
+    Reset_btns_btns.push_back(Joke_Btn1);
+    Reset_btns_keyboard->inlineKeyboard.push_back({ Joke_Btn1 });
+
+    return Reset_btns_keyboard;
 }
